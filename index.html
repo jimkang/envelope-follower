@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>Envelope Follower</title>
+    <link rel="stylesheet" href="app.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="status-message" class="hidden"></div>
+
+    <h1 class="title">
+      Envelope Follower
+    </h1>
+
+    <div class="intro-description">Get an <a href="https://www.cs.princeton.edu/courses/archive/fall08/cos436/DSP/DSP.html">envelope follower</a> for a signal. And by "signal", I mean audio file.</div>
+
+    <label for="file1">Audio source file</input>
+    <input id="file1" class="input-source" type="file" accept="audio/*, .m4a,.ogg,.mp3,.wav" />
+
+    <div class="file1-audio hidden">
+      <audio class="file1-audio-player" controls></audio>
+    </div>
+
+    <button id="envelope-button" class="hidden">Get envelope follower</button>
+
+    <div class="result-audio hidden">
+      <audio class="result-audio-player" controls></audio>
+    </div>
+
+    <div id="version-info"></div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
