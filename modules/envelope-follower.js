@@ -15,12 +15,13 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
     const output = outputList[0];
 
     let channelCount = Math.min(input.length, output.length);
-    let sampleCount = input.length;
 
     for (let channelNum = 0; channelNum < channelCount; channelNum++) {
+      let samples = input[channelNum];
+      const sampleCount = samples.length;
       for (let i = 0; i < sampleCount; i++) {
-        let sample = input[channelNum][i];
-        output[channelNum][0] = sample;
+        let sample = samples[i];
+        output[channelNum][i] = sample;
       }
     }
 
