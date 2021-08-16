@@ -38,6 +38,7 @@
     "accessor": "^3.0.0",
     "audio-context-singleton": "^1.0.3",
     "audiobuffer-to-wav": "^1.0.0",
+    "await-to-js": "^3.0.0",
     "basic-2d-math": "^1.0.1",
     "basic-browser-request": "^9.0.2",
     "call-next-tick": "^2.0.1",

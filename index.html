@@ -14,17 +14,21 @@
 
     <div class="intro-description">Get an <a href="https://www.cs.princeton.edu/courses/archive/fall08/cos436/DSP/DSP.html">envelope follower</a> for a signal. And by "signal", I mean audio file.</div>
 
-    <label for="file1">Audio source file</input>
+    <label for="file1">Audio source file</label>
     <input id="file1" class="input-source" type="file" accept="audio/*, .m4a,.ogg,.mp3,.wav" />
 
-    <div class="file1-audio hidden">
+    <div class="result file1-audio hidden">
       <audio class="file1-audio-player" controls></audio>
+      <canvas class="waveform-0" width="500" height="200"></canvas>
+      <canvas class="waveform-1" width="500" height="200"></canvas>
     </div>
 
     <button id="envelope-button" class="hidden">Get envelope follower</button>
 
-    <div class="result-audio hidden">
+    <div class="result result-audio hidden">
       <audio class="result-audio-player" controls></audio>
+      <canvas class="waveform-0" width="500" height="200"></canvas>
+      <canvas class="waveform-1" width="500" height="200"></canvas>
     </div>
 
     <div id="version-info"></div>

@@ -76,7 +76,8 @@ async function startTransformation() {
   inBufferNode.buffer = infoBuffer;
   var envelopeFollowerNode = new AudioWorkletNode(
     ctx,
-    'envelope-follower-processor'
+    'envelope-follower-processor',
+    { processorOptions: { windowsPerBlock: 1 } }
   );
 
   var { startRecording, stopRecording, recordingDest } = getRecordingDest({
@@ -97,7 +98,6 @@ async function startTransformation() {
   inBufferNode.start(0);
 
   function onRecordingEnd({ chunks }) {
-    console.log('chunks', chunks);
     if (chunks.length !== 1) {
       handleError(
         new Error(
