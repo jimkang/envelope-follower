@@ -56,7 +56,11 @@ function drawWaveform({ canvasSel, channelData, color }) {
   canvasCtx.lineWidth = 1;
 
   var x = scaleLinear().domain([0, channelData.length]).range([0, width]);
-  var y = scaleLinear().domain([-1.0, 1.0]).range([0, height]);
+  // In canvas, and GUIs in general, remember:
+  // +y is down! If we want positive values to be
+  // higher than negative ones, we must flip their
+  // signs.
+  var y = scaleLinear().domain([-1.0, 1.0]).range([height, 0]);
   canvasCtx.beginPath();
   canvasCtx.strokeStyle = color;
   canvasCtx.moveTo(0, y(0));
