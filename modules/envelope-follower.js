@@ -1,7 +1,8 @@
 class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
   constructor({ processorOptions }) {
     super();
-    this.windowsPerBlock = processorOptions.windowsPerBlock;
+    this.smoothingFactor = processorOptions.smoothingFactor;
+    this.prevAvg;
   }
 
   process(inputList, outputList) {
@@ -19,13 +20,16 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
     for (let channelNum = 0; channelNum < channelCount; channelNum++) {
       let samples = input[channelNum];
       const sampleCount = samples.length;
-      const windowLength = sampleCount / this.windowsPerBlock;
       for (let i = 0; i < sampleCount; i++) {
-        output[channelNum][i] = getRectifiedAvgOfNeighbors(
-          samples,
-          windowLength,
-          i
-        );
+        // Math.abs is the rectifying.
+        const sample = Math.abs(samples[i]);
+        if (this.prevAvg === undefined) {
+          this.prevAvg = sample;
+          continue;
+        }
+        const avg = calcNextAvg(this.prevAvg, this.smoothingFactor, sample);
+        output[channelNum][i] = avg;
+        this.prevAvg = avg;
       }
     }
 
@@ -33,27 +37,9 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
   }
 }
 
-function getRectifiedAvgOfNeighbors(array, windowLength, i) {
-  var lowerBound = ~~(i - windowLength / 2);
-  if (lowerBound < 0) {
-    lowerBound = 0;
-  }
-  var upperBound = ~~(i + windowLength / 2);
-  if (upperBound > array.length) {
-    upperBound = array.length;
-  }
-
-  const size = upperBound - lowerBound;
-  if (size < 1) {
-    return 0;
-  }
-
-  var sum = 0;
-  for (let j = lowerBound; j < upperBound; ++j) {
-    // Math.abs is the rectifying.
-    sum += Math.abs(array[j]);
-  }
-  return sum / size;
+function calcNextAvg(prevAvg, smoothingFactor, currentValue) {
+  const inverseSmoothingFactor = 1.0 - smoothingFactor;
+  return smoothingFactor * currentValue + inverseSmoothingFactor * prevAvg;
 }
 
 registerProcessor('envelope-follower-processor', EnvelopeFollowerProcessor);

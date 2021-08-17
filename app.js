@@ -77,7 +77,7 @@ async function startTransformation() {
   var envelopeFollowerNode = new AudioWorkletNode(
     ctx,
     'envelope-follower-processor',
-    { processorOptions: { windowsPerBlock: 1 } }
+    { processorOptions: { smoothingFactor: 0.2 } }
   );
 
   var { startRecording, stopRecording, recordingDest } = getRecordingDest({
