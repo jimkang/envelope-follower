@@ -13,6 +13,7 @@ var infoBuffer;
 
 var envelopeButton = document.getElementById('envelope-button');
 envelopeButton.addEventListener('click', startTransformation);
+var smoothingField = document.getElementById('smoothing-field');
 
 (async function go() {
   window.onerror = reportTopLevelError;
@@ -81,7 +82,7 @@ async function startTransformation() {
   var envelopeFollowerNode = new AudioWorkletNode(
     ctx,
     'envelope-follower-processor',
-    { processorOptions: { smoothingFactor: 0.2 } }
+    { processorOptions: { smoothingFactor: +smoothingField.value } }
   );
 
   ctx.destination.channelCount = infoBuffer.numberOfChannels;

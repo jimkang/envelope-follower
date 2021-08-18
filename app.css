@@ -70,6 +70,10 @@ a:visited {
   align-items: center;
 }
 
+canvas {
+  border: solid 1px #555;
+}
+
 @media all and (max-height: 568px) {
   body {
     font-size: 18px;

@@ -3,7 +3,7 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
     super();
     this.smoothingFactor = processorOptions.smoothingFactor;
     this.prevAvg;
-    this.lowest = 0;
+    //this.lowest = 0;
   }
 
   process(inputList, outputList) {
@@ -22,29 +22,30 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
       let samples = input[channelNum];
       const sampleCount = samples.length;
       for (let i = 0; i < sampleCount; i++) {
-        // Math.abs is the rectifying.
-        const sample = Math.abs(samples[i]);
+        const sample = samples[i];
+        // This is the rectifying.
+        const squared = sample * sample;
         if (this.prevAvg === undefined) {
-          this.prevAvg = sample;
+          this.prevAvg = squared;
           continue;
         }
-        const avg = calcNextAvg(this.prevAvg, this.smoothingFactor, sample);
+        const avg = calcNextAvg(this.prevAvg, this.smoothingFactor, squared);
         output[channelNum][i] = avg;
         this.prevAvg = avg;
-        if (avg < this.lowest) {
-          this.lowest = avg;
-        }
+        //if (avg < this.lowest) {
+        //this.lowest = avg;
+        //}
       }
     }
 
-    console.log('lowest from worklet', this.lowest);
+    //console.log('lowest from worklet', this.lowest);
     return true;
   }
 }
 
 function calcNextAvg(prevAvg, smoothingFactor, currentValue) {
   const inverseSmoothingFactor = 1.0 - smoothingFactor;
-  return smoothingFactor * currentValue + inverseSmoothingFactor * prevAvg;
+  return smoothingFactor * prevAvg + inverseSmoothingFactor * currentValue;
 }
 
 registerProcessor('envelope-follower-processor', EnvelopeFollowerProcessor);
