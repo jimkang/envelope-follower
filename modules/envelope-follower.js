@@ -3,6 +3,7 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
     super();
     this.smoothingFactor = processorOptions.smoothingFactor;
     this.prevAvg;
+    this.lowest = 0;
   }
 
   process(inputList, outputList) {
@@ -30,9 +31,13 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
         const avg = calcNextAvg(this.prevAvg, this.smoothingFactor, sample);
         output[channelNum][i] = avg;
         this.prevAvg = avg;
+        if (avg < this.lowest) {
+          this.lowest = avg;
+        }
       }
     }
 
+    console.log('lowest from worklet', this.lowest);
     return true;
   }
 }

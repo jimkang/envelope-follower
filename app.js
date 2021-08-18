@@ -55,8 +55,12 @@ function followRoute() {
 }
 
 async function startTransformation() {
-  var { getCurrentContext } = ContextKeeper();
-  var { error, values } = await ep(getCurrentContext);
+  var { getCurrentContext } = ContextKeeper({ offline: true });
+  var { error, values } = await ep(getCurrentContext, {
+    sampleRate: infoBuffer.sampleRate,
+    length: infoBuffer.length,
+    numberOfChannels: infoBuffer.numberOfChannels,
+  });
   if (error) {
     handleError(error);
     return;
@@ -65,79 +69,33 @@ async function startTransformation() {
   var ctx = values[0];
 
   try {
-    await ctx.resume();
+    //await ctx.resume();
     await ctx.audioWorklet.addModule('modules/envelope-follower.js');
   } catch (error) {
     handleError(error);
     return;
   }
 
-  var inBufferNode = ctx.createBufferSource();
-  inBufferNode.buffer = infoBuffer;
+  var infoBufferNode = ctx.createBufferSource();
+  infoBufferNode.buffer = infoBuffer;
   var envelopeFollowerNode = new AudioWorkletNode(
     ctx,
     'envelope-follower-processor',
     { processorOptions: { smoothingFactor: 0.2 } }
   );
 
-  var { startRecording, stopRecording, recordingDest } = getRecordingDest({
-    ctx,
-    channelCount: infoBuffer.numberOfChannels,
-    onRecordingEnd,
-  });
-
   ctx.destination.channelCount = infoBuffer.numberOfChannels;
 
-  inBufferNode.connect(envelopeFollowerNode);
+  infoBufferNode.connect(envelopeFollowerNode);
   envelopeFollowerNode.connect(ctx.destination);
-  envelopeFollowerNode.connect(recordingDest);
+  infoBufferNode.start();
+  ctx.startRendering().then(onRecordingEnd).catch(handleError);
 
-  startRecording();
-
-  inBufferNode.addEventListener('ended', stopRecording);
-  inBufferNode.start(0);
-
-  function onRecordingEnd({ chunks }) {
-    if (chunks.length !== 1) {
-      handleError(
-        new Error(
-          'Did not expect anything other than one chunk from media recorder.'
-        )
-      );
-      return;
-    }
-
+  function onRecordingEnd(renderedBuffer) {
     renderResultAudio({
-      blob: chunks[0],
+      audioBuffer: renderedBuffer,
       containerSelector: '.result-audio',
     });
-  }
-}
-
-function getRecordingDest({ ctx, channelCount, onRecordingEnd }) {
-  var chunks = [];
-  var recordingDest = ctx.createMediaStreamDestination();
-  recordingDest.channelCount = channelCount;
-  var recorder = new MediaRecorder(recordingDest.stream);
-  recorder.ondataavailable = saveData;
-  recorder.onstop = onStop;
-
-  return { startRecording, stopRecording, recordingDest };
-
-  function saveData(e) {
-    chunks.push(e.data);
-  }
-
-  function onStop() {
-    onRecordingEnd({ chunks });
-  }
-
-  function startRecording() {
-    recorder.start();
-  }
-
-  function stopRecording() {
-    recorder.stop();
   }
 }
 

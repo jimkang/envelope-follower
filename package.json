@@ -36,7 +36,7 @@
   "dependencies": {
     "@jimkang/randomid": "^1.0.2",
     "accessor": "^3.0.0",
-    "audio-context-singleton": "^1.0.3",
+    "audio-context-singleton": "^1.2.2",
     "audiobuffer-to-wav": "^1.0.0",
     "await-to-js": "^3.0.0",
     "basic-2d-math": "^1.0.1",

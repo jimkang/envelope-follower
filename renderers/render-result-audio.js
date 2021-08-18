@@ -50,6 +50,7 @@ export async function renderResultAudio({
 function drawWaveform({ canvasSel, channelData, color }) {
   const width = canvasSel.attr('width');
   const height = canvasSel.attr('height');
+  var lowest = 1.0;
 
   var canvasCtx = canvasSel.node().getContext('2d', { alpha: false });
   canvasCtx.clearRect(0, 0, width, height);
@@ -65,7 +66,13 @@ function drawWaveform({ canvasSel, channelData, color }) {
   canvasCtx.strokeStyle = color;
   canvasCtx.moveTo(0, y(0));
   for (let i = 0; i < channelData.length; ++i) {
-    canvasCtx.lineTo(x(i), y(channelData[i]));
+    const val = channelData[i];
+    const yPos = y(val);
+    canvasCtx.lineTo(x(i), yPos);
+    if (val < lowest) {
+      lowest = val;
+    }
   }
   canvasCtx.stroke();
+  console.log('lowest', lowest);
 }
