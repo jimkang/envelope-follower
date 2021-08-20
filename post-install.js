@@ -1,15 +1,15 @@
 /* global __dirname, process */
 
-var fs = require('fs-extra');
+var fs = require('fs');
 
 const modulesDir = `${__dirname}/../../modules`;
 
-fs.ensureDir(modulesDir, onDir);
+fs.mkdir(modulesDir, onDir);
 
 function onDir(error) {
   handleError(error);
 
-  fs.copy(`${__dirname}/modules/envelope-follower.js`, modulesDir, handleError);
+  fs.copyFile(`${__dirname}/modules/envelope-follower.js`, modulesDir, handleError);
 }
 
 function handleError(error) {
