@@ -4,11 +4,18 @@ var fs = require('fs');
 
 const modulesDir = `${__dirname}/../../modules`;
 
-fs.mkdir(modulesDir, onDir);
+if (fs.existsSync(modulesDir)) {
+  copyFile();
+} else {
+  fs.mkdir(modulesDir, onDir);
+}
 
 function onDir(error) {
   handleError(error);
+  copyFile();
+}
 
+function copyFile() {
   fs.copyFile(
     modulesDir,
     `${__dirname}/modules/envelope-follower.js`,
