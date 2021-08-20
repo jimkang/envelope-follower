@@ -1,14 +1,12 @@
-import RouteState from 'route-state';
 import handleError from 'handle-error-web';
 import { version } from './package.json';
 import { renderSources } from './renderers/render-sources';
-import { renderResultAudio } from './renderers/render-result-audio';
+import { renderAudio } from 'render-audio';
 import { decodeArrayBuffer } from './tasks/decode-array-buffer';
 import { queue } from 'd3-queue';
 import ContextKeeper from 'audio-context-singleton';
 import ep from 'errorback-promise';
 
-var routeState;
 var infoBuffer;
 
 var envelopeButton = document.getElementById('envelope-button');
@@ -18,15 +16,6 @@ var smoothingField = document.getElementById('smoothing-field');
 (async function go() {
   window.onerror = reportTopLevelError;
   renderVersion();
-
-  routeState = RouteState({
-    followRoute,
-    windowObject: window,
-  });
-  routeState.routeFromHash();
-})();
-
-function followRoute() {
   renderSources({ onBuffers });
 
   function onBuffers(buffers) {
@@ -47,13 +36,13 @@ function followRoute() {
 
     infoBuffer = audioBuffers[0];
 
-    renderResultAudio({
+    renderAudio({
       audioBuffer: infoBuffer,
       containerSelector: '.file1-audio',
     });
     envelopeButton.classList.remove('hidden');
   }
-}
+})();
 
 async function startTransformation() {
   var { getCurrentContext } = ContextKeeper({ offline: true });
@@ -70,7 +59,6 @@ async function startTransformation() {
   var ctx = values[0];
 
   try {
-    //await ctx.resume();
     await ctx.audioWorklet.addModule('modules/envelope-follower.js');
   } catch (error) {
     handleError(error);
@@ -93,7 +81,7 @@ async function startTransformation() {
   ctx.startRendering().then(onRecordingEnd).catch(handleError);
 
   function onRecordingEnd(renderedBuffer) {
-    renderResultAudio({
+    renderAudio({
       audioBuffer: renderedBuffer,
       containerSelector: '.result-audio',
     });

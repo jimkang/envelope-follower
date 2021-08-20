@@ -1,8 +1,31 @@
 # envelope-follower
 
-Gets an <a href="https://www.cs.princeton.edu/courses/archive/fall08/cos436/DSP/DSP.html">envelope follower</a> for a signal.
+An audioWorklet that gets an <a href="http://msp.ucsd.edu/techniques/latest/book-html/node153.html">envelope follower</a> for a signal. [Here is a demo.](https://jimkang.com/envelope-follower).
 
-## Getting it running
+## Installing
+
+    npm i envelope-follower
+
+Then, it will be in `modules/envelope-follower` in your project.
+
+You can use it in your web page like so:
+
+    audioContext.audioWorklet.addModule('modules/envelope-follower.js')
+    .then(useWorklet)
+    .catch(handleError);
+
+    function useWorklet() {
+      var envelopeFollowerNode = new AudioWorkletNode(
+        audioContext,
+        'envelope-follower-processor',
+        { processorOptions: { smoothingFactor: +smoothingField.value } }
+      );
+      // Connect a source and dest to it here.
+    }
+
+A higher `smoothingFactor` makes the follower less sensitive to changes in the signal.
+
+## Getting the demo running
 
 Once you have this source code on your computer, you can get it running by doing the following.
 
