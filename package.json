@@ -1,6 +1,6 @@
 {
   "name": "envelope-follower",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Gets an envelope follower for a signal.",
   "main": "modules/envelope-follower.js",
   "scripts": {
