@@ -1,7 +1,8 @@
 class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
   constructor({ processorOptions }) {
     super();
-    this.smoothingFactor = processorOptions.smoothingFactor;
+    this.smoothingFactorUp = processorOptions.smoothingFactorUp;
+    this.smoothingFactorDown = processorOptions.smoothingFactorDown;
     this.prevAvg;
     //this.lowest = 0;
   }
@@ -29,7 +30,11 @@ class EnvelopeFollowerProcessor extends AudioWorkletProcessor {
           this.prevAvg = squared;
           continue;
         }
-        const avg = calcNextAvg(this.prevAvg, this.smoothingFactor, squared);
+        let smoothingFactor = this.smoothingFactorDown;
+        if (squared > this.prevAvg) {
+          smoothingFactor = this.smoothingFactorUp;
+        }
+        const avg = calcNextAvg(this.prevAvg, smoothingFactor, squared);
         output[channelNum][i] = avg;
         this.prevAvg = avg;
         //if (avg < this.lowest) {

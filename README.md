@@ -18,12 +18,12 @@ You can use it in your web page like so:
       var envelopeFollowerNode = new AudioWorkletNode(
         audioContext,
         'envelope-follower-processor',
-        { processorOptions: { smoothingFactor: +smoothingField.value } }
+        { processorOptions: { smoothingFactorUp: 0.5, smoothingFactorDown: 0.99 } }
       );
       // Connect a source and dest to it here.
     }
 
-A higher `smoothingFactor` makes the follower less sensitive to changes in the signal.
+A higher smoothingFactor makes the follower less sensitive to changes in the signal, either when it's rising or falling.
 
 ## Getting the demo running
 
