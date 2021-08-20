@@ -9,7 +9,11 @@ fs.mkdir(modulesDir, onDir);
 function onDir(error) {
   handleError(error);
 
-  fs.copyFile(`${__dirname}/modules/envelope-follower.js`, modulesDir, handleError);
+  fs.copyFile(
+    modulesDir,
+    `${__dirname}/modules/envelope-follower.js`,
+    handleError
+  );
 }
 
 function handleError(error) {
