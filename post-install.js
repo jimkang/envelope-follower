@@ -17,8 +17,8 @@ function onDir(error) {
 
 function copyFile() {
   fs.copyFile(
-    modulesDir,
     `${__dirname}/modules/envelope-follower.js`,
+    modulesDir,
     handleError
   );
 }
